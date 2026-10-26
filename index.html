@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#dfe7ea">
+<meta name="description" content="Sturmflut-Vorhersage des BSH an der Fischauktionshalle Hamburg">
+<title>Landunter Hamburg</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<div id="app">
+  <svg id="hero" role="img" aria-label="Fischauktionshalle von der Elbe gesehen, mit Pegellatte, Person in Gummistiefeln und dem Wasserstand zum gewählten Zeitpunkt" preserveAspectRatio="none"></svg>
+
+  <header id="topbar">
+    <div class="brand">
+      <h1>Landunter</h1>
+      <p><span>Fischauktionshalle Altona</span><span class="src" id="src"><i></i><span>lädt …</span></span></p>
+      <button class="link" id="nexthw" type="button"></button>
+    </div>
+    <div class="tb-r">
+      <button class="btn" id="more" type="button" aria-haspopup="dialog">Mehr</button>
+    </div>
+  </header>
+
+  <button class="btn" id="zoom" type="button" aria-pressed="false"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><circle cx="6.5" cy="6.5" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 10 L14.5 14.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg><span>Nah ran</span></button>
+  <div id="hint" class="off" aria-hidden="true">Wischen ändert die Zeit · Doppeltippen zoomt</div>
+  <section id="dock" aria-label="Zeitpunkt wählen">
+    <div class="dock-row">
+      <button class="btn primary" id="play" type="button" aria-label="Abspielen"><svg viewBox="0 0 16 16" width="16" height="16"><path d="M4 2 L14 8 L4 14 Z" fill="currentColor"/></svg></button>
+      <div class="when"><b id="tlabel">–</b><span class="src-tag" id="tsrc"></span></div>
+      <div class="lv"><b id="tlevel">–</b><span class="chip c0" id="tchip">–</span></div>
+      <button class="btn" id="nowbtn" type="button">Jetzt</button>
+    </div>
+    <div class="tlwrap"><div id="tl"></div><input type="range" id="t" min="0" max="1" step="1" value="0" aria-label="Zeitpunkt auf der Tidenkurve"><span class="tl-focus"></span></div>
+  </section>
+</div>
+
+<div id="scrim" hidden></div>
+<aside id="sheet" hidden role="dialog" aria-modal="true" aria-label="Weitere Informationen">
+  <div id="grab" aria-hidden="true"></div>
+  <div class="sheet-head">
+    <nav class="tabs" role="tablist">
+      <button type="button" role="tab" data-tab="lage">Lage</button>
+      <button type="button" role="tab" data-tab="schnitt">Querschnitt</button>
+      <button type="button" role="tab" data-tab="hafencity">HafenCity</button>
+      <button type="button" role="tab" data-tab="kurve">Kurve</button>
+      <button type="button" role="tab" data-tab="tiden">Tiden</button>
+      <button type="button" role="tab" data-tab="info">Info</button>
+    </nav>
+    <button class="btn" id="close" type="button" aria-label="Schließen">✕</button>
+  </div>
+  <div id="sheet-body">
+    <section data-pane="lage">
+      <div class="lead" id="lead"></div>
+      <div class="cards"><article class="card" id="card-fish"></article><article class="card" id="card-hc"></article></div>
+      <p class="small" id="stamp"></p>
+    </section>
+    <section data-pane="schnitt" hidden>
+      <h2>Querschnitt</h2>
+      <figure class="fig"><svg id="fish-prof" viewBox="0 0 520 230" role="img" aria-label="Querschnitt von der Elbe über Kaimauer und Vorplatz durch die Halle"></svg>
+        <figcaption class="cap">Von der Elbe durch einen Seitenflügel: Kaikante +3,72&nbsp;m, Vorplatz +3,66&nbsp;m, rote Linie = Vorplatz nass ab +3,70&nbsp;m. Der Vorplatz liegt etwas tiefer als die Kaikante und läuft über tiefere Stellen voll.</figcaption></figure>
+      <div class="facts" id="facts-fish"></div>
+    </section>
+    <section data-pane="hafencity" hidden>
+      <h2>HafenCity · Dalmannkai</h2>
+      <figure class="fig"><svg id="scene-hc" viewBox="0 0 580 200" role="img" aria-label="Querschnitt Dalmannkai mit Promenade und Warft"></svg>
+        <figcaption class="cap">Geländeprofil aus dem DGM1 2022: Kaimauer, Promenade auf +4,35&nbsp;m, Rampe zur Warft auf +7,90&nbsp;m. Gelbe Linien: amtliche Schwellen aus dem Merkblatt Flutschutz HafenCity.</figcaption></figure>
+      <div class="facts" id="facts-hc"></div>
+    </section>
+    <section data-pane="kurve" hidden>
+      <h2>Kurve &amp; Modellfächer</h2>
+      <div id="chart"></div>
+      <div class="legend">
+        <span><i style="border-top-style:dashed;border-color:var(--muted)"></i>astronomische Tide</span>
+        <span><i style="border-color:var(--ink)"></i>gemessen</span>
+        <span><i style="border-color:var(--water-hi);border-top-width:3px"></i>automatische Vorhersage</span>
+        <span><i style="border-color:var(--signal);border-top-width:6px;width:6px"></i>Spanne der 6 Modellläufe</span>
+        <span><i style="border:0;width:9px;height:9px;background:var(--danger);transform:rotate(45deg)"></i>amtl. Vorhersage ± Unsicherheit</span>
+      </div>
+      <p class="cap">Tippen oder ziehen in der Kurve setzt den Zeitpunkt. Die gelben Balken zeigen, wie weit sechs Modellläufe für jedes Hoch- und Niedrigwasser auseinanderliegen.</p>
+    </section>
+    <section data-pane="tiden" hidden>
+      <h2>Nächste Tiden</h2>
+      <div class="tbl"><table id="events"></table></div>
+    </section>
+    <section data-pane="info" hidden>
+      <h2>Grundlagen</h2>
+      <div class="field"><span class="label">Wasserstand</span><small>Amtliche Wasserstandsvorhersage des Bundesamts für Seeschifffahrt und Hydrographie (BSH), Pegel Hamburg-St. Pauli, Lizenz CC BY 4.0. Pegelnull = NHN −5,00 m. Das BSH übernimmt keine Gewähr.</small></div>
+      <div class="field"><span class="label">Gelände</span><small>DGM1 Hamburg 2022, 1-m-Raster, Höhen in m NHN (DHHN2016), Landesbetrieb Geoinformation und Vermessung, dl-de/by-2.0. Eine Fläche zählt als nass, sobald der Wasserstand sie über tieferes Gelände von der Elbe aus erreicht. Mobile Flutschutzwände, Tore und Abflüsse sind nicht berücksichtigt.</small></div>
+      <div class="field"><span class="label">Fischauktionshalle</span><small>Grundriss 103 × 24 m, Traufe +11,3, First +17,2, Giebel +17,3, Kuppel +25,3 und Spitze +29,2 m NHN aus Oberflächenmodell (bDOM) und 3D-Gebäudemodell (LoD2) 2022. Fenster, Fächerfenster und Schmuck sind nach Fotos gezeichnet. Die Pegellatte an der Kaimauer ist ergänzt, sie steht dort nicht wirklich.</small></div>
+      <div class="field"><span class="label">Hochwassermarken</span><small>Höchststände am Pegel St. Pauli: 1962 ca. 5,70 m, 1976 6,45 m, 2013 „Xaver“ 6,08 m, 2022 5,86 m NHN (Hamburg Port Authority, Gewässerkundliche Information 2025).</small></div>
+      <div class="field"><span class="label">Kein Warndienst</span><small>Die Wasserhöhen sind eine Rechnung aus Vorhersage und Geländemodell, keine Messung vor Ort. Ab +4,50 m NHN gelten für Hamburg allein die Angaben des Hamburger Sturmflutwarndienstes (WADI). Im Ernstfall den Durchsagen von Polizei und Feuerwehr folgen.</small></div>
+    </section>
+  </div>
+</aside>
+<script type="module" src="/src/main.ts"></script>
+</body>
+</html>
