@@ -47,4 +47,4 @@ Kein amtlicher Warndienst. Ab +4,50 m NHN gelten für Hamburg allein die Angaben
 
 ## Deployment
 
-Statische Seite. Auf Vercel: Framework „Vite“, Build `npm run build`, Ausgabe `dist`.
+Statische Seite, konfiguriert in `vercel.json` als Vercel-Projekt mit einem Dienst `app` (Vite, Build `npm run build`), öffentlich unter `/`. `tools/dgm` ist kein Dienst, sondern ein lokales Skript, das `src/data/dgm.json` erzeugt.
