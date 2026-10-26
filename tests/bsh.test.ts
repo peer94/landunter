@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import fixture from "./fixtures/st-pauli-2026-10-26.json";
 import { normalize, type RawGauge } from "../src/lib/bsh";
+import { API } from "../src/config";
 
 const raw = (fixture as unknown as { features: { properties: RawGauge }[] }).features[0].properties;
 
@@ -23,5 +24,11 @@ describe("normalize", () => {
 
   it("liest die sechs Modellläufe", () => {
     expect(g.events[0].mos).toHaveLength(6);
+  });
+});
+
+describe("API-Adresse", () => {
+  it("enthält lang, damit der BSH-Server nicht ohne CORS-Header umleitet", () => {
+    expect(new URL(API).searchParams.get("lang")).toBeTruthy();
   });
 });

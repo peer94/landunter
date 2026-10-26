@@ -1,7 +1,12 @@
 /** Feste Größen der Darstellung. Alle Höhen in m NHN (DHHN2016). */
 
+/**
+ * BSH-Schnittstelle für den Pegel St. Pauli. Der Parameter lang ist Pflicht: Ohne ihn leitet
+ * der Server per 301 auf eine URL mit lang=en um, und diese Umleitung hat keinen CORS-Header,
+ * sodass der Browser die Antwort verwirft.
+ */
 export const API =
-  "https://gdi.bsh.de/ldproxy/rest/services/WaterLevelForecast/collections/waterlevelforecastdata/items?f=json&operator_gauge_id=5952050";
+  "https://gdi.bsh.de/ldproxy/rest/services/WaterLevelForecast/collections/waterlevelforecastdata/items?f=json&lang=de&operator_gauge_id=5952050";
 
 /** Höchststände am Pegel St. Pauli (HPA, Gewässerkundliche Information 2025; 1962 gerundet). */
 export const HIST = [
