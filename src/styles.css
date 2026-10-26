@@ -67,6 +67,7 @@ svg text{font-family:var(--f-mono)}
 .answer[data-verdict="nein"] .a-word{color:var(--ok)}
 .a-detail{font-size:.86rem;line-height:1.35;color:var(--ink)}
 .a-next{margin:2px 0 0;font-size:.8rem;color:var(--muted)}
+.a-stamp{margin:0;font-size:.68rem;color:var(--muted)}
 .tb-r{display:flex;gap:8px;align-items:center;flex:0 0 auto}
 .src{display:inline-flex;gap:5px;align-items:center;font-family:var(--f-mono);font-size:.68rem;padding:2px 7px;border:1px solid var(--line);border-radius:99px;background:var(--surface);color:var(--ink)}
 .src i{width:7px;height:7px;border-radius:50%;background:var(--muted);display:inline-block}
@@ -109,7 +110,7 @@ svg text{font-family:var(--f-mono)}
   .tlwrap{height:52px}
 }
 @media (max-height:520px) and (orientation:landscape){
-  .q,.a-next,.brandline span:not(.src){display:none} .a-word{font-size:1.8rem} .a-detail{font-size:.8rem}
+  .q,.a-next,.a-stamp,.brandline span:not(.src){display:none} .a-word{font-size:1.8rem} .a-detail{font-size:.8rem}
   .tlwrap{height:30px} #dock{padding:6px 8px;gap:4px}
 }
 

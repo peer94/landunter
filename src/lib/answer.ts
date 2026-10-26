@@ -1,5 +1,6 @@
 import { REF } from "../config";
 import type { Gauge, TideEvent } from "../types";
+import type { Measurement } from "./pegelonline";
 import { best, wetSpan } from "./levels";
 
 export type Verdict = "ja" | "nein" | "vielleicht";
@@ -66,13 +67,20 @@ export function callTide(g: Gauge, e: TideEvent, now: number, limit = REF.foreWe
 const rank: Record<Verdict, number> = { nein: 0, vielleicht: 1, ja: 2 };
 
 /** Höchster gemessener Stand eines Tages bis jetzt, als Bewertung. */
-function measuredPeak(g: Gauge, target: string, now: number, limit: number): TideCall | null {
-  const pts = g.curve.filter((c) => c.meas != null && c.t <= now && dayKey.format(c.t) === target);
+function measuredPeak(g: Gauge, target: string, now: number, limit: number, extra: Measurement[] = []): TideCall | null {
+  const pts: Measurement[] = [
+    ...g.curve.filter((c) => c.meas != null).map((c) => ({ t: c.t, v: c.meas as number })),
+    ...extra,
+  ].filter((m) => m.t <= now && dayKey.format(m.t) === target);
   if (!pts.length) return null;
-  const top = pts.reduce((a, b) => ((b.meas as number) > (a.meas as number) ? b : a));
-  const peak = top.meas as number, wet = peak >= limit;
-  const span = wet ? wetSpan(g.curve, limit, top.t) : { lo: null, hi: null };
-  const e: TideEvent = { t: top.t, type: "HW", tide: top.tide, fc: null, unc: null, dev: null, official: false, mos: [] };
+  const top = pts.reduce((a, b) => (b.v > a.v ? b : a));
+  const peak = top.v, wet = peak >= limit;
+  let span: { lo: number | null; hi: number | null } = { lo: null, hi: null };
+  if (wet) {
+    const near = pts.filter((m) => Math.abs(m.t - top.t) <= 4 * 3600e3 && m.v >= limit);
+    span = { lo: Math.min(...near.map((m) => m.t)), hi: Math.max(...near.map((m) => m.t)) };
+  }
+  const e: TideEvent = { t: top.t, type: "HW", tide: null, fc: null, unc: null, dev: null, official: false, mos: [] };
   return { event: e, verdict: wet ? "ja" : "nein", lo: peak, hi: peak, mid: peak, measured: true, from: span.lo, to: span.hi };
 }
 
@@ -81,9 +89,9 @@ function measuredPeak(g: Gauge, target: string, now: number, limit: number): Tid
  * Maßgeblich sind die noch ausstehenden Hochwasser (ja schlägt vielleicht schlägt nein).
  * Sind alle vorbei, entscheidet der höchste gemessene Stand des Tages.
  */
-export function answerFor(g: Gauge, day: "heute" | "morgen", now = Date.now(), limit = REF.foreWet): DayAnswer {
+export function answerFor(g: Gauge, day: "heute" | "morgen", now = Date.now(), limit = REF.foreWet, extra: Measurement[] = []): DayAnswer {
   const target = dayKey.format(now + (day === "morgen" ? 864e5 : 0));
-  const past = day === "heute" ? measuredPeak(g, target, now, limit) : null;
+  const past = day === "heute" ? measuredPeak(g, target, now, limit, extra) : null;
   const calls = g.events
     .filter((e) => e.type === "HW" && dayKey.format(e.t) === target)
     .map((e) => callTide(g, e, now, limit))

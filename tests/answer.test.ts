@@ -47,6 +47,14 @@ describe("answerFor", () => {
     expect(a.verdict).toBe("ja");
     expect(a.key?.measured).toBe(true);
   });
+  it("findet den nächtlichen Höchststand über PEGELONLINE, wenn die BSH-Kurve erst später beginnt", () => {
+    const late: Gauge = { ...g, curve: g.curve.filter((c) => c.t >= at("2026-10-26T06:00:00+01:00")), events: [] };
+    const meas = [{ t: at("2026-10-26T03:19:00+01:00"), v: 4.316 }, { t: at("2026-10-26T04:00:00+01:00"), v: 4.2 }];
+    expect(answerFor(late, "heute", at("2026-10-26T21:00:00+01:00")).verdict).toBe("nein");
+    const a = answerFor(late, "heute", at("2026-10-26T21:00:00+01:00"), 3.7, meas);
+    expect(a.verdict).toBe("ja");
+    expect(a.key?.mid).toBeCloseTo(4.316, 3);
+  });
   it("morgen (27.10.): nein", () => {
     expect(answerFor(g, "morgen", at("2026-10-26T12:00:00+01:00")).verdict).toBe("nein");
   });

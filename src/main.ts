@@ -1,5 +1,6 @@
 import "./styles.css";
 import { fetchGauge } from "./lib/bsh";
+import { fetchMeasurements } from "./lib/pegelonline";
 import { $, S } from "./state";
 import { renderChart } from "./ui/chart";
 import { renderAnswer } from "./ui/answer";
@@ -20,7 +21,9 @@ function renderAll(t: number) {
 }
 
 async function load() {
-  S.d = await fetchGauge();
+  const [d, meas] = await Promise.all([fetchGauge(), fetchMeasurements()]);
+  S.d = d;
+  S.meas = meas;
 }
 
 async function start() {
