@@ -23,7 +23,6 @@ export function renderLage() {
   if (!next) return;
   const lv = evLevel(next), over = lv - d.mhw, k = cls(over);
   S.next = next;
-  $("nexthw").textContent = `Nächstes Hochwasser ${whenWord(next.t)}: ${fmtM(lv)} →`;
   const meas = d.curve.filter((c) => c.meas != null);
   const last = meas[meas.length - 1];
   const peak = meas.reduce((a, c) => ((c.meas ?? -99) > (a.meas ?? -99) ? c : a), meas[0]);

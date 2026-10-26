@@ -7,7 +7,7 @@ import { kit, latteSVG, personSVG, wave, type Pt } from "./draw";
    Maße aus LoD2/bDOM 2022: Grundriss u −52…+51, Traufe Seitenflügel +11,3, Obergaden +13,0…+15,6,
    First +17,2, Laternen +18,8, Mittelbau u −11,5…+10,6 (Traufe +12,7), Giebel u −5,7…+4,9 bis +17,3,
    Kuppel Basis +18,0 (Breite 13 m) bis +25,3, Laterne mit Spitze bis +29,2. */
-export const FH = { u0: -90, u1: 90, zt: 42, zb: -8, latte: -6.6, c: -0.4, person: 2.4 };
+export const FH = { u0: -90, u1: 90, zt: 42, zb: -30, latte: -6.6, c: -0.4, person: 2.4 };
 export const fx = (u: number) => (u - FH.u0) * 10;
 export const fy = (z: number) => (FH.zt - z) * 10;
 export function hallSVG() {

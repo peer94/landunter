@@ -4,8 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#dfe7ea">
-<meta name="description" content="Sturmflut-Vorhersage des BSH an der Fischauktionshalle Hamburg">
-<title>Landunter Hamburg</title>
+<meta name="description" content="Ja, nein oder vielleicht: Steht der Hamburger Fischmarkt heute unter Wasser? Direkte Antwort aus der amtlichen Wasserstandsvorhersage des BSH, Pegel St. Pauli, mehrmals pro Stunde aktuell.">
+<title>Steht der Fischmarkt heute unter Wasser? · Landunter</title>
+<meta property="og:title" content="Steht der Fischmarkt heute unter Wasser?">
+<meta property="og:description" content="Ja, nein oder vielleicht – aus der amtlichen BSH-Vorhersage für den Pegel St. Pauli, gezeigt an der Fischauktionshalle.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="de_DE">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,10 +20,14 @@
   <svg id="hero" role="img" aria-label="Fischauktionshalle von der Elbe gesehen, mit Pegellatte, Person in Gummistiefeln und dem Wasserstand zum gewählten Zeitpunkt" preserveAspectRatio="none"></svg>
 
   <header id="topbar">
-    <div class="brand">
-      <h1>Landunter</h1>
-      <p><span>Fischauktionshalle Altona</span><span class="src" id="src"><i></i><span>lädt …</span></span></p>
-      <button class="link" id="nexthw" type="button"></button>
+    <div class="ask">
+      <p class="brandline"><b>Landunter</b><span>Fischauktionshalle Altona</span><span class="src" id="src"><i></i><span>lädt …</span></span></p>
+      <h1 class="q">Steht der Fischmarkt heute unter Wasser?</h1>
+      <button class="answer" id="answer" type="button" data-verdict="">
+        <span class="a-word" id="a-word">…</span>
+        <span class="a-detail" id="a-detail">Vorhersage wird geladen.</span>
+      </button>
+      <p class="a-next" id="a-next" hidden></p>
     </div>
     <div class="tb-r">
       <button class="btn" id="more" type="button" aria-haspopup="dialog">Mehr</button>

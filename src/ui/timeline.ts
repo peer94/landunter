@@ -91,5 +91,4 @@ export function initTimeline() {
     S.playing = setInterval(() => { if (S.t >= tRange()[1]) return stop(); setT(S.t + STEP); }, ms);
   };
   $("nowbtn").onclick = () => { stop(); setT(Date.now()); };
-  $("nexthw").onclick = () => { if (S.next) { stop(); setT(S.next.t); } };
 }

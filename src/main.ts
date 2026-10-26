@@ -2,6 +2,7 @@ import "./styles.css";
 import { fetchGauge } from "./lib/bsh";
 import { $, S } from "./state";
 import { renderChart } from "./ui/chart";
+import { renderAnswer } from "./ui/answer";
 import { buildScenes, fitHero, initHeroGestures, showHintOnce } from "./ui/hero";
 import { initSheet, renderEvents, renderLage, sheetOpen } from "./ui/sheet";
 import { initTimeline, renderTimeline, setT } from "./ui/timeline";
@@ -10,6 +11,7 @@ const REFRESH_MS = 10 * 60e3;
 
 function renderAll(t: number) {
   renderLage();
+  renderAnswer();
   buildScenes();
   renderTimeline();
   renderEvents();
